@@ -6,24 +6,23 @@ import 'package:graduation/core/utiles/path.dart';
 import 'package:graduation/core/utiles/snakeBar.dart';
 import 'package:graduation/core/widgets/custom_button.dart';
 import 'package:graduation/core/widgets/custom_text_form_feild.dart';
-import 'package:graduation/features/login&registerview/presntation/manager/login_cubit/login_cubit.dart';
-import 'package:graduation/features/login&registerview/presntation/view/as_doctor_or_student.dart';
-import 'package:graduation/features/login&registerview/presntation/view/signup-view.dart';
+import 'package:graduation/features/login&registerview/presntation/manager/signup_cubit/cubit/signup_cubit.dart';
+import 'package:graduation/features/login&registerview/presntation/view/login-view.dart';
 import 'package:graduation/features/login&registerview/presntation/view/widgets/custom_textfeild_passward.dart';
 import 'package:graduation/features/login&registerview/presntation/view/widgets/text_login_intro.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-import 'forget_passward.dart';
-
-class LoginViewBody extends StatefulWidget {
-  const LoginViewBody({super.key});
+class SignUpViewBody extends StatefulWidget {
+  const SignUpViewBody({super.key});
 
   @override
-  State<LoginViewBody> createState() => _LoginViewBodyState();
+  State<SignUpViewBody> createState() => _SignUpViewBodyState();
 }
 
-class _LoginViewBodyState extends State<LoginViewBody> {
+class _SignUpViewBodyState extends State<SignUpViewBody> {
   GlobalKey<FormState> formkey = GlobalKey();
+  final TextEditingController controllerFirstName = TextEditingController();
+  final TextEditingController controllerLastName = TextEditingController();
   final TextEditingController controllerEmail = TextEditingController();
   final TextEditingController controllerpass = TextEditingController();
   bool lood = false;
@@ -31,8 +30,8 @@ class _LoginViewBodyState extends State<LoginViewBody> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LogInCubit(),
-      child: BlocConsumer<LogInCubit, LoginCubitState>(
+      create: (context) => SignupCubit(),
+      child: BlocConsumer<SignupCubit, SignupState>(
         listener: (context, state) {
           // if (state is LogInCubitSucssess) {
           //   lood = false;
@@ -69,11 +68,38 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                           height: 48,
                         ),
                         CustomTextFormFeild(
+                            controller: controllerFirstName,
+                            keyboardType: TextInputType.name,
+                            label: const Text('First Name'),
+                            onchanged: (data) {
+                              BlocProvider.of<SignupCubit>(context).firstName =
+                                  data;
+                            },
+                            color: AppColors.kGray,
+                            hintText: 'First Name'),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        CustomTextFormFeild(
+                            controller: controllerLastName,
+                            keyboardType: TextInputType.name,
+                            label: const Text('Last Name'),
+                            onchanged: (data) {
+                              BlocProvider.of<SignupCubit>(context).lastName =
+                                  data;
+                            },
+                            color: AppColors.kGray,
+                            hintText: 'Last Name'),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        CustomTextFormFeild(
                             controller: controllerEmail,
                             keyboardType: TextInputType.emailAddress,
                             label: const Text('E-mail(Required)'),
                             onchanged: (data) {
-                              BlocProvider.of<LogInCubit>(context).email = data;
+                              BlocProvider.of<SignupCubit>(context).email =
+                                  data;
                             },
                             color: AppColors.kGray,
                             hintText: 'E-mail(Required)'),
@@ -86,18 +112,10 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                         const SizedBox(
                           height: 16,
                         ),
-                        ForgetPassward(
-                          onTap: () {
-                            GoRouter.of(context).push('/ForgetView');
-                          },
-                        ),
-                        const SizedBox(
-                          height: 32,
-                        ),
                         CustomButton(
                             textColor: AppColors.kLightColor,
                             fontsize: 16,
-                            theText: 'Log In',
+                            theText: 'Create New Account',
                             onpressed: () async {
                               if (formkey.currentState!.validate()) {
                                 GoRouter.of(context).push('/customnavbar');
@@ -121,7 +139,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                         const SizedBox(
                           height: 100,
                         ),
-                        const Text("Don't have an account?",
+                        const Text("Have an account already?",
                             style: TextStyle(
                                 fontFamily: 'Poppins-Regular.ttf',
                                 fontSize: 16)),
@@ -130,9 +148,9 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SignUpView()));
+                                    builder: (context) => LoginView()));
                           },
-                          child: const Text('Sign Up',
+                          child: const Text('Log in',
                               style: TextStyle(
                                   fontFamily: 'Poppins-Bold.ttf',
                                   fontSize: 16,
